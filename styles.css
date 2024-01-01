@@ -1,0 +1,70 @@
+body {
+    background-color: #001b2b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-family: 'Manrope', sans-serif;
+}
+
+h1, p {
+    text-align: center;
+}
+
+#game-board {
+    margin: 20px 0;
+}
+
+.square {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #002639;
+    display: inline-block;
+    text-align: center;
+    font-size: 48px;
+    line-height: 100px;
+    cursor: pointer;
+    background-color: #001b2b;
+    color: white;
+    text-shadow: 1px 1px 5px, -1px -1px 5px;
+}
+
+.correct {
+    border-color: #006f66;
+    background-color: #00484b;	
+}
+
+.incorrect {
+    border-color: #c1505e;
+    background-color: #720026;
+}
+
+#start-button {
+    margin: 20px 0;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #001b2b;
+    border: 1px solid white;
+    color: white;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+}
+
+#message {
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+.footer {
+    color: #D0D0D0;
+    opacity: 10%;
+    font-size: 15px;
+}
+
+.centered-row {
+    margin-left: calc((100% - (102px * 3)) / 2); /* Compute the margin to center the row */
+}

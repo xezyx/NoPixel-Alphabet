@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alphabet Hack - NoPixel 4.0</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Alphabet Hack (NoPixel 4.0)</h1>
+    <p class="">Tap the letters in order</p>
+    <div id="game-board"></div>
+    <div id="message"></div>
+    <button id="start-button">Start Game<br>(Enter)</button>
+
+    <footer class="footer">Made by @EditorEZY</footer>
+
+    <script>
+        // Available characters
+        const characters = ['Q', 'W', 'E', 'A', 'S', 'D'];
+
+        // Generate a random character
+        function getRandomCharacter(previousCharacter) {
+          const randomIndex = Math.floor(Math.random() * characters.length);
+          const randomCharacter = characters[randomIndex];
+          
+          // Check if the previous character is the same as the random character
+          if (previousCharacter && previousCharacter === randomCharacter) {
+            // Generate a random number between 0 and 1
+            const probability = Math.random();
+            
+            // If the random number is less than 0.5, generate a new random character
+            if (probability < 0.5) {
+              return getRandomCharacter(previousCharacter);
+            }
+          }
+          
+          return randomCharacter;
+        }
+
+        // Generate the game board with question marks
+        function generateGameBoardWithQuestionMarks() {
+            const gameBoard = document.getElementById('game-board');
+            gameBoard.innerHTML = '';
+
+            const row1 = document.createElement('div');
+            row1.classList.add('row');
+            for (let i = 0; i < 6; i++) {
+                const square = document.createElement('div');
+                square.classList.add('square');
+                square.textContent = '?';
+                row1.appendChild(square);
+            }
+            gameBoard.appendChild(row1);
+
+            const row2 = document.createElement('div');
+            row2.classList.add('row');
+            for (let i = 0; i < 6; i++) {
+                const square = document.createElement('div');
+                square.classList.add('square');
+                square.textContent = '?';
+                row2.appendChild(square);
+            }
+            gameBoard.appendChild(row2);
+
+            const row3 = document.createElement('div');
+            row3.classList.add('row');
+            row3.classList.add('centered-row');
+            for (let i = 0; i < 3; i++) {
+                const square = document.createElement('div');
+                square.classList.add('square');
+                square.textContent = '?';
+                row3.appendChild(square);
+            }
+            gameBoard.appendChild(row3);
+        }
+
+        // Generate the game board with random characters
+        function generateGameBoardWithCharacters() {
+          const gameBoard = document.getElementById('game-board');
+          gameBoard.innerHTML = '';
+        
+          const row1 = document.createElement('div');
+          row1.classList.add('row');
+          let previousCharacter = null;
+          for (let i = 0; i < 6; i++) {
+            const square = document.createElement('div');
+            square.classList.add('square');
+            const randomCharacter = getRandomCharacter(previousCharacter);
+            square.textContent = randomCharacter;
+            previousCharacter = randomCharacter;
+            row1.appendChild(square);
+          }
+          gameBoard.appendChild(row1);
+        
+          const row2 = document.createElement('div');
+          row2.classList.add('row');
+          previousCharacter = null;
+          for (let i = 0; i < 6; i++) {
+            const square = document.createElement('div');
+            square.classList.add('square');
+            const randomCharacter = getRandomCharacter(previousCharacter);
+            square.textContent = randomCharacter;
+            previousCharacter = randomCharacter;
+            row2.appendChild(square);
+          }
+          gameBoard.appendChild(row2);
+        
+          const row3 = document.createElement('div');
+          row3.classList.add('row');
+          row3.classList.add('centered-row');
+          previousCharacter = null;
+          for (let i = 0; i < 3; i++) {
+            const square = document.createElement('div');
+            square.classList.add('square');
+            const randomCharacter = getRandomCharacter(previousCharacter);
+            square.textContent = randomCharacter;
+            previousCharacter = randomCharacter;
+            row3.appendChild(square);
+          }
+          gameBoard.appendChild(row3);
+        }
+
+        // Check user input
+        function checkInput(event) {
+            const pressedKey = event.key.toUpperCase();
+            const squares = document.querySelectorAll('.square');
+            let currentSquareIndex = 0;
+            let currentSquare = squares[currentSquareIndex];
+
+            while (currentSquare.classList.contains('correct') || currentSquare.classList.contains('incorrect')) {
+                currentSquareIndex++;
+                currentSquare = squares[currentSquareIndex];
+            }
+
+            const currentSquareCharacter = currentSquare.textContent.toUpperCase();
+
+            if (pressedKey === currentSquareCharacter) {
+                currentSquare.classList.add('correct');
+                const nextSquare = squares[currentSquareIndex + 1];
+                if (!nextSquare) {
+                    endGame(true);
+                }
+            } else {
+                currentSquare.classList.add('incorrect');
+                endGame(false);
+            }
+        }
+
+        // End the game
+        function endGame(isWin, isTimeout = false) {
+            const squares = document.querySelectorAll('.square');
+           const messageEl = document.getElementById('message');
+
+            for (let i = 0; i < squares.length; i++) {
+                const square = squares[i];
+                if (!square.classList.contains('correct')) {
+                    square.classList.add('incorrect');
+                }
+            }
+
+            if (isWin) {
+                messageEl.textContent = 'Success!';
+            } else {
+                if (isTimeout) {
+                    messageEl.textContent = 'Failed!';
+                } else {
+                    messageEl.textContent = 'Failed!';
+                }
+            }
+
+            clearInterval(timer); // Stop the timer
+            document.removeEventListener('keydown', checkInput);
+            document.getElementById('start-button').disabled = false;
+        }
+
+        let timer; // Declare the timer variable outside the startGame function
+
+        // Start the game
+        function startGame() {
+            generateGameBoardWithCharacters();
+            document.addEventListener('keydown', checkInput);
+            document.getElementById('start-button').disabled = true;
+
+            const messageEl = document.getElementById('message');
+            let timeLeft = 5;
+            messageEl.textContent = timeLeft;
+
+            // Set a timer for 1 second
+            timer = setInterval(() => {
+                timeLeft--;
+                messageEl.textContent = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    endGame(false, true); // Game over due to timeout
+                }
+            }, 1000);
+        }
+
+        // Initialize the game board with question marks
+        function initializeGame(){
+            generateGameBoardWithQuestionMarks();
+            const startButton = document.getElementById('start-button');
+            startButton.addEventListener('click', startGame);
+            document.addEventListener('keydown', function (event){
+                if (event.key === 'Enter' && !startButton.disabled) {
+                    startGame();
+                }
+            });
+        }
+
+        // Initialize the game when the page loads
+        window.onload = initializeGame;
+    </script>
+</body>
+</html>
